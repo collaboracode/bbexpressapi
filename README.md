@@ -1,11 +1,6 @@
 # Todos
-- get all correct guest data
-- update form
-- create form
-- link pencil to edit form
 
-
-## and then
+## do this
 - authorization roles
 
 ## and then
@@ -13,3 +8,40 @@
 
 ## and then
 - add more and then
+
+<br>
+<br>
+<br>
+<br>
+
+# Getting started
+
+## install depencies
+
+```
+$ npm install
+```
+
+## env
+create file named .env in the projects root directory,
+and set DB_CONNECTION to your Atlas connection string
+
+
+example
+```
+DB_CONNECTION=mongodb+srv://<username>:<password>@clustername.mongodb.net/test?retryWrites=true&w=majority&useNewUrlParser=true&useUnifiedTopology=true
+```
+
+---
+
+## run server with 
+```
+$ npm start
+```
+
+## or
+
+```
+$ npm run dev
+```
+to use nodemon

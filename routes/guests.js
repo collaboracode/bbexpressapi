@@ -50,16 +50,7 @@ router.post('/', (req, res) => {
 //UPDATES ONE GUEST
 router.patch('/:guestId', async (req, res) => {
   try {
-
-    // adds all the keys and their values from body to $set
-    let setValues = { $set: {} }
-      ; (() => { // ! the semi-colon here is required
-        Object.keys(req.body).forEach((key, i) => {
-          const obj = { [`${key}`]: req.body[key] }
-          setValues.$set = Object.assign(setValues.$set, obj)
-        })
-      })()
-    const updateGuest = await Guest.updateOne({ _id: req.params.guestId }, setValues)
+    const updateGuest = await Guest.updateOne({ _id: req.params.guestId }, {$set: {...req.body}})
     res.json(updateGuest)
   } catch (err) {
     res.json({ message: err })
