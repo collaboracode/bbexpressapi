@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+
 const mongoose = require('mongoose')
 require('dotenv/config');
 
@@ -7,5 +8,9 @@ require('dotenv/config');
 router.get('/', function (req, res, next) {
   res.render('index', { title: 'Express' });
 });
+
+
+mongoose.connect(process.env.DB_CONNECTION)
+
 
 module.exports = router;

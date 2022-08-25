@@ -24,14 +24,12 @@ $ npm install
 
 ## env
 create file named .env in the projects root directory,
-and set DB_CONNECTION to your Atlas connection string for guests,
-DB_CONNECTION_USERS to your Atlas connection string for users
+and set DB_CONNECTION to your Atlas connection string for collection
 
 
 example
 ```
-DB_CONNECTION=mongodb+srv://<username>:<password>@clustername.mongodb.net/guestsCollection?retryWrites=true&w=majority&useNewUrlParser=true&useUnifiedTopology=true
-DB_CONNECTION_USERS=mongodb+srv://<username>:<password>@clustername.mongodb.net/userCollection?retryWrites=true&w=majority&useNewUrlParser=true&useUnifiedTopology=true
+DB_CONNECTION=mongodb+srv://<username>:<password>@clustername.mongodb.net/CollectionName?retryWrites=true&w=majority&useNewUrlParser=true&useUnifiedTopology=true
 ```
 
 ---
