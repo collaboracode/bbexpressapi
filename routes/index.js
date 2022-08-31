@@ -10,7 +10,10 @@ router.get('/', function (req, res, next) {
 });
 
 
-mongoose.connect(process.env.DB_CONNECTION)
+mongoose.connect(process.env.DB_CONNECTION,{
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
 
 
 module.exports = router;

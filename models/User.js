@@ -1,10 +1,5 @@
 const mongoose = require('mongoose')
-
-const session = require('express-session');  // session middleware
-const connectEnsureLogin = require('connect-ensure-login'); //authorization
 const passportLocalMongoose = require('passport-local-mongoose');
-const passport = require('passport');  // authentication
-const bodyParser = require('body-parser'); // parser middleware
 
 const UserSchema = mongoose.Schema({
     id: Number,

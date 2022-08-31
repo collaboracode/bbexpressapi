@@ -5,6 +5,17 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
+
+
+const session = require('express-session');  // session middleware
+const connectEnsureLogin = require('connect-ensure-login'); //authorization
+const passport = require('passport');  // authentication
+const bodyParser = require('body-parser'); // parser middleware
+const mongoose = require('mongoose')
+const User = require('./models/User')
+
+
+
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const guestsRoute = require('./routes/guests');
@@ -23,9 +34,49 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+// user sign in
+app.use(session({
+  secret: 'r8q,+&1LM3)CD*zAGpx1xm{NeQhc;#',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { maxAge: 60 * 60 * 1000 } // 1 hour
+}));
+
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+passport.use(User.createStrategy());
+
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+// app.post('/login', (req, res) => {
+//   // Insert Login Code Here
+//   let username = req.body.username;
+//   let password = req.body.password;
+//   res.send(`Username: ${username} Password: ${password}`);
+// });
+
+app.post('/login', passport.authenticate('local', {
+  successRedirect: '/guests',
+  failureRedirect: '/'
+}));
+
+app.post('/logout', function(req, res, next){
+  req.logout(function(err) {
+    if (err) { return next(err); }
+    res.redirect('/');
+  });
+});
 // routes
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+
+app.use('/users', connectEnsureLogin.ensureLoggedIn("/"), usersRouter);
 app.use('/guests', guestsRoute);
 
 // catch 404 and forward to error handler
