@@ -13,7 +13,7 @@ const passport = require('passport');  // authentication
 const bodyParser = require('body-parser'); // parser middleware
 const mongoose = require('mongoose')
 const User = require('./models/User')
-
+require('dotenv/config');
 
 
 const indexRouter = require('./routes/index');
@@ -22,7 +22,13 @@ const guestsRoute = require('./routes/guests');
 
 var app = express();
 
-app.use(cors());
+const corsOptions = {
+  origin: process.env.ORIGIN,
+  credentials: true,
+}
+app.use(cors(corsOptions));
+// app.options(process.env.ORIGIN, cors(corsOptions))
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -40,7 +46,10 @@ app.use(session({
   secret: 'r8q,+&1LM3)CD*zAGpx1xm{NeQhc;#',
   resave: false,
   saveUninitialized: true,
-  cookie: { maxAge: 60 * 60 * 1000 } // 1 hour
+  cookie: {
+    maxAge: 60 * 60 * 1000, // 1 hour
+    sameSite: "lax"
+  }
 }));
 
 
@@ -61,14 +70,20 @@ passport.deserializeUser(User.deserializeUser());
 //   let password = req.body.password;
 //   res.send(`Username: ${username} Password: ${password}`);
 // });
+app.get('/not_logged_in', function (req, res, next) {
+  res.send("not logged in")
+})
+app.get('/logged_in', connectEnsureLogin.ensureLoggedIn('/not_logged_in'),
+  (req, res) => {
+    res.status(202).send("logged in")
+  }
+)
+app.post('/login', passport.authenticate('local'), (req, res) => {
+  res.status(200).send()
+});
 
-app.post('/login', passport.authenticate('local', {
-  successRedirect: '/guests',
-  failureRedirect: '/'
-}));
-
-app.post('/logout', function(req, res, next){
-  req.logout(function(err) {
+app.post('/logout', function (req, res, next) {
+  req.logout(function (err) {
     if (err) { return next(err); }
     res.redirect('/');
   });
@@ -80,12 +95,12 @@ app.use('/users', connectEnsureLogin.ensureLoggedIn("/"), usersRouter);
 app.use('/guests', guestsRoute);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

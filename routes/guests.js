@@ -2,7 +2,6 @@ const express = require('express')
 const router = express.Router()
 const Guest = require('../models/Guest')
 const mongoose = require('mongoose');
-require('dotenv/config');
 
 
 // todo add validations for all but get requests to make sure that the user is an admin,
