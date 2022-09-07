@@ -64,12 +64,9 @@ passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// app.post('/login', (req, res) => {
-//   // Insert Login Code Here
-//   let username = req.body.username;
-//   let password = req.body.password;
-//   res.send(`Username: ${username} Password: ${password}`);
-// });
+
+// ! separate auth
+
 app.get('/not_logged_in', function (req, res, next) {
   res.send("not logged in")
 })
@@ -88,6 +85,22 @@ app.post('/logout', function (req, res, next) {
     res.redirect('/');
   });
 });
+
+app.post('/signup', function (req, res) {
+  if (req.body.username && req.body.email && req.body.password) {
+    User.register({ username: req.body.username, email: req.body.email/*, first_name: req.body.first_name, last_name: req.body.last_name*/, active: false }, req.body.password, function (err, user) {
+      if (err) {
+        console.error(err)
+        res.status(500).send(err)
+      }
+      res.status(201).send(user)
+    })
+  } else {
+    res.status(422).send({ recieved: req.body, expected: { username: "string", email: "string", password: "string" } })
+  }
+})
+// ! end of auth
+
 // routes
 app.use('/', indexRouter);
 

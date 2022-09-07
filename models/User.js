@@ -13,6 +13,9 @@ const UserSchema = mongoose.Schema({
     active: Boolean,
 })
 
-UserSchema.plugin(passportLocalMongoose);
+UserSchema.plugin(passportLocalMongoose, {
+    usernameUnique: true,
+    usernameQueryFields: ['email', 'username']
+});
 
 module.exports = mongoose.model('users', UserSchema);
